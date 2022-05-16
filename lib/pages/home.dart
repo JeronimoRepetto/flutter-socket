@@ -2,8 +2,10 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../models/band.dart';
+import '../services/socket_service.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -22,6 +24,7 @@ class _HomePageState extends State<HomePage> {
   ];
   @override
   Widget build(BuildContext context) {
+    final serverStatus = Provider.of<SocketService>(context).serverStatus;
     return Scaffold(
       appBar: AppBar(
         title: const Center(
@@ -32,6 +35,19 @@ class _HomePageState extends State<HomePage> {
         ),
         backgroundColor: Colors.white,
         elevation: 1,
+        actions: [
+          Container(
+              margin: const EdgeInsets.only(right: 10),
+              child: serverStatus == ServerStatus.Online
+                  ? Icon(
+                      Icons.check_circle,
+                      color: Colors.blue[300],
+                    )
+                  : const Icon(
+                      Icons.offline_bolt,
+                      color: Colors.red,
+                    ))
+        ],
       ),
       body: ListView.builder(
           itemCount: bands.length,
@@ -48,7 +64,7 @@ class _HomePageState extends State<HomePage> {
     return Dismissible(
       key: Key(band.id),
       direction: DismissDirection.startToEnd,
-      onDismissed: (DismissDirection direction){
+      onDismissed: (DismissDirection direction) {
         print('direction: $direction');
         print('id: ${band.id}');
         //TODO: Llamar el borrado del server

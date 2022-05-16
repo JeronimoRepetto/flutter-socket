@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+import 'package:provider/provider.dart';
+import 'package:band_names/pages/status.dart';
+import 'package:band_names/services/socket_service.dart';
 import 'package:band_names/pages/home.dart';
 
 
@@ -10,13 +13,19 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'MaterialApp',
-      initialRoute: 'home',
-      routes: {
-        'home': (_) => const HomePage()
-      },
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => SocketService(),)
+      ],
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: 'MaterialApp',
+        initialRoute: 'home',
+        routes: {
+          'home': (_) => const HomePage(),
+          'status' :(_) => const StatusPage()
+        },
+      ),
     );
   }
 }
