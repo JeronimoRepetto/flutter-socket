@@ -9,5 +9,5 @@ class Band {
   Band(this._id, this._name, this._votes);
 
   factory Band.fromMap(Map<String, dynamic> obj) =>
-      Band(obj['id'], obj['name'], obj['votes']);
+      Band(obj['id'] ?? 'no-id', obj['name'] ?? 'no-name', obj['votes'] ?? 0);
 }
