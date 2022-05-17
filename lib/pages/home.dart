@@ -33,12 +33,14 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void dispose() {
+    final socketService = Provider.of<SocketService>(context, listen: false);
+    socketService.socket!.off('active-band');
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final serverStatus = Provider.of<SocketService>(context).serverStatus;
+    final socketService = Provider.of<SocketService>(context);
     return Scaffold(
       appBar: AppBar(
         title: const Center(
@@ -52,7 +54,7 @@ class _HomePageState extends State<HomePage> {
         actions: [
           Container(
               margin: const EdgeInsets.only(right: 10),
-              child: serverStatus == ServerStatus.Online
+              child: socketService.serverStatus == ServerStatus.Online
                   ? Icon(
                       Icons.check_circle,
                       color: Colors.blue[300],
@@ -175,19 +177,23 @@ class _HomePageState extends State<HomePage> {
   _showGraph() {
     Map<String, double> dataMap = {};
     //dataMap.putIfAbsent('Flutter', () =>  5);
-    for (var band in bands) {
-      dataMap.putIfAbsent(band.name, () => band.votes.toDouble());
+    if (bands.length > 1) {
+      for (var band in bands) {
+        dataMap.putIfAbsent(band.name, () => band.votes.toDouble());
+      }
+      return PieChart(
+        dataMap: dataMap,
+        chartType: ChartType.ring,
+        chartValuesOptions: const ChartValuesOptions(
+          showChartValueBackground: true,
+          showChartValues: true,
+          showChartValuesInPercentage: false,
+          showChartValuesOutside: false,
+          decimalPlaces: 0,
+        ),
+      );
+    }else{
+      return const SizedBox();
     }
-    return PieChart(
-      dataMap: dataMap,
-      chartType: ChartType.ring,
-      chartValuesOptions: const ChartValuesOptions(
-        showChartValueBackground: true,
-        showChartValues: true,
-        showChartValuesInPercentage: false,
-        showChartValuesOutside: false,
-        decimalPlaces: 0,
-      ),
-    );
   }
 }
